@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+   <!-- ! llamamos a boostrap local -->
+    {% load boostrap5 %}
+    {% boostrap_css  %}
+    {% boostrap_javascript %}
+
+    <title>Document</title>
+</head>
+<body>
+     <!-- !  estamos en boostrap, por lo tanto no se pueden personalisar las clases de html  -->
+    <div class="container"> 
+    <header>
+        {% block encabezado %}
+        {% endblock %}
+    </header>
+    
+    <nav>
+        {% block menu %}
+        {% endblock %}
+    </nav>
+    
+    <section>
+        {% block contenido %}
+        {% endblock %}
+    </section>
+    
+    <footer>
+        {% block piePagina %}
+        {% endblock %}
+    </footer>
+    
+</div>
+
+</body>
+</html>
