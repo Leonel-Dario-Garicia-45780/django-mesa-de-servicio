@@ -51,7 +51,7 @@ class Caso(models.Model):
     caso_solicitud              = models.ForeignKey (Solicitud,             on_delete=models.PROTECT,       db_comment='referencia a la solicitud')
     caso_codigo                 = models.CharField  (max_length=10,         unique=True,                    db_comment='codigo del caso, irrepetible')
     caso_usuario                = models.ForeignKey (Usuarios,              on_delete=models.PROTECT,       db_comment='empleado de soporte tecnico asignado')
-    caso_estado                 = models.CharField  (max_length=15,         choices=estado_casos,           db_comment=''  )
+    caso_estado                 = models.CharField  (max_length=15,         choices=estado_casos,           db_comment='',             default='solicitada')
     fecha_hora_actualizacion    = models.DateTimeField (auto_now=True,                                      db_comment="")
 
 class Tipo_procedimiento(models.Model):
