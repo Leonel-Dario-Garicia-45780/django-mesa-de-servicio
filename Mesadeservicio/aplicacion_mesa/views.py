@@ -7,6 +7,16 @@ from aplicacion_mesa.models import *
 from random import *
 
 from django.db import Error, transaction
+from datetime import datetime
+
+# ! librerias del correo 
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+import threading
+from smtplib import SMTPException
+
+
 
 # Create your views here.
 
@@ -22,6 +32,30 @@ def inicio_administrador(request):
         }
         #!                        la carpeta y el html
         return render(request, "administrador/inicio_administrador.html", dato_sesion)
+    else:
+        mensaje="por favor inicie sesion primero"
+        return render(request, "formulario_secion.html ",{"mensaje":mensaje})
+
+def inicio_tecnico(request):
+    if request.user.is_authenticated:
+        dato_sesion={
+            "user": request.user,
+            "rol" : request.user.groups.get().name
+        }
+        #!                        la carpeta y el html
+        return render(request, "tecnico/inicio_tecnico.html", dato_sesion)
+    else:
+        mensaje="por favor inicie sesion primero"
+        return render(request, "formulario_secion.html ",{"mensaje":mensaje})
+ 
+def inicio_empleado(request):
+    if request.user.is_authenticated:
+        dato_sesion={
+            "user": request.user,
+            "rol" : request.user.groups.get().name
+        }
+        #!                        la carpeta y el html
+        return render(request, "empleado/inicio_empleado.html", dato_sesion)
     else:
         mensaje="por favor inicie sesion primero"
         return render(request, "formulario_secion.html ",{"mensaje":mensaje})
@@ -93,3 +127,15 @@ def soliciud():
 
 def cerrar_sesion(request):
     return
+
+
+
+def enviarcorreo(asunto=None, mensaje=None, destinatario=None, archivo=None ):
+    remitente=sttngs.EMAIL_HOST_USER
+    template= get_template('enviacorreo.html')
+    contenido=template.render({'mensaje':mensaje})
+    try:
+
+    except
+
+
