@@ -9,8 +9,20 @@
 
 <h3> solicitud </h3>
 
-<form action="//" method="post">
-    
+<form action="/registrar_solicitud/" method="post">
+    {% csrf_token %}
+
+    <label for=""> Descripciion</label>
+    <textarea name="texto_descripcion" id="" placeholder="descripcion de lo que le pasa al equipo"></textarea>
+
+    <label for="">Oficina_ambiente</label>
+    <select name="texto_oficina_ambiente" id="">
+        <option value="">seleccione</option>
+        {% for  %}
+        {%  %}
+    </select>
+
+
 </form>
 
 

@@ -106,7 +106,11 @@ def registro_solicitud(request):
                 soli_oficina_ambiente = var_ofcinambiente
             )
             soliciud.save()
-            consecutivo_caso = randint(1,1000)
+            fecha=datetime.now()
+            year= fecha.year
+            consecutivo_caso = Solicitud.objects.filter(
+                fecha_hora_creacion__year=year 
+            ).count()
             codigo_caso = "REQ" + str(consecutivo_caso).rjust(5,'0')
             user_caso = Usuarios.objects,filter(groups__name__in=(["Administrador"]) )
             var_estado = "solicitada"
@@ -121,16 +125,23 @@ def registro_solicitud(request):
         transaction.rollback()
         mensaje= f"{error}"
         return mensaje
-
+    
+    oficina_ambientes= Ofi_ambientes.objects.all()
+    retorno={"mensaje":mensaje, "oficinas_ambietes":oficina_ambientes}
+    return render(request, "empleado/solicitud.html", retorno)
 
 
 def enviarcorreo(asunto=None, mensaje=None, destinatario=None, archivo=None ):
     remitente=settings.EMAIL_HOST_USER
-    template= get_template('enviacorreo.html')
-    contenido=template.render({'mensaje':mensaje})
+    template= get_template('enviar_correo.html')
+    contenido=template.render({'mensaje':mensaje,})
     try:
         correo = EmailMultiAlternatives(
         asunto, mensaje, remitente, destinatario)
+        correo.attach_alternative(contenido, 'text/html')
+        if archivo != None :
+            correo.attach_file(archivo)
+        correo.send(fail_silently=True)
     except SMTPException as error:
         print(error)
 
