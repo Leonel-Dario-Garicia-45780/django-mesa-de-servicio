@@ -113,10 +113,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
+#! zona horaria
+LANGUAGE_CODE = 'es-co'
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
 
@@ -145,18 +145,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 #! recaptcha
 
-GOOGLE_RECAPTCHA_SECRET_KEY = ''
-#!              lave privada ^^^^^
+# GOOGLE_RECAPTCHA_SECRET_KEY = ''
+# #!              lave privada ^^^^^
 
 
-#! variables del correo, para enviar el correo pues
-EMAIL_HOST = 'smtp.gmail.com' #? no se que es o que ba ahi
-EMAIL_HOST_USER = 'gun45780@gmail.com'
-#!cuenta que envia correo ^^^^ 
-EMAIL_HOST_PASSWORD = 'qnwviudvxwmgcpfv'
-#! contraseña de aplicacion^^^^^^
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# #! variables del correo, para enviar el correo pues
+# EMAIL_HOST = 'smtp.gmail.com' #? no se que es o que ba ahi
+# EMAIL_HOST_USER = 'gun45780@gmail.com'
+# #!cuenta que envia correo ^^^^ 
+# EMAIL_HOST_PASSWORD = 'qnwviudvxwmgcpfv'
+# #! contraseña de aplicacion^^^^^^
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
 
 
 

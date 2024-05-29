@@ -16,6 +16,8 @@ from django.template.loader import get_template
 import threading
 from smtplib import SMTPException
 
+#! importamos json
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -77,6 +79,19 @@ def inicio_de_sesion(request):
         else:
             return redirect('/inicio_empleado')
 
+def vista_solicitud(request):
+    if request.user.is_authenticated:
+        oficna_ambientes= Ofi_ambientes.objects.all()
+        datos_sesion={
+            "user": request.user,
+            "rol" : request.user.groups.get().name,
+            'oficinas_ambientes': oficna_ambientes
+        }
+        return render(request, "empleado/solicitud.html", datos_sesion)
+    else:
+        mensaje= " inicia sesion"
+        return render(request, "formulario_secion.html", mensaje)
+
 def registro_solicitud(request):
     try:
         with transaction.atomic():
@@ -107,35 +122,61 @@ def registro_solicitud(request):
         mensaje= f"{error}"
         return mensaje
 
-def vista_solicitud(request):
-    if request.user.is_authenticated:
-        datos_sesion={
-            "user": request.user,
-            "rol" : request.user.groups.get().name,
-            'oficinas_ambientes': Ofi_ambientes
-        }
-        return
-    else:
-        mensaje= " inicia sesion"
-        return render(request, "formulario_secion.html", mensaje)
+
+
+def enviarcorreo(asunto=None, mensaje=None, destinatario=None, archivo=None ):
+    remitente=settings.EMAIL_HOST_USER
+    template= get_template('enviacorreo.html')
+    contenido=template.render({'mensaje':mensaje})
+    try:
+        correo = EmailMultiAlternatives(
+        asunto, mensaje, remitente, destinatario)
+    except SMTPException as error:
+        print(error)
+
+#     except
+
+#! esta funcion es de administrador
+def listar_casos(request):
+    try:
+        lista_de_casos= Caso.objects.filter(caso_estado='solicitada')
+        #! se trae los tencicos de paso para asignarlos
+        tecnicos=Usuarios.objects.filter(groups__name__in=['Tecnico'])
+        mensaje="consulta realizada"
+    except Error as error:
+        mensaje=str(error)
+
+    retorno ={ "lista_de_casos ": lista_de_casos, "mensaje":mensaje , "tecnicos":tecnicos}
+    return render(request, "administrador/lista_de_casos.html" , retorno)
+
+def listar_empleados_tecnicos():
+    try:
+        tecnicos=Usuarios.objects.filter(groups__name__in="Tecnico")
+        mensaje="tencicos consultados"
+    except Error as error:
+        mensaje=str(error)
+        
+    retorno={"tecnicos":tecnicos, "mensaje":mensaje}
+    return JsonResponse(retorno)
+    
+def asignar_tecnico_caso(request):
+    try:
+        id_tecnico= int(request.POST[''] )
+        usuario_tecnico= Usuarios.objects.get(pk=id_tecnico)
+        id_caso= int( request.POST[''])
+        caso=Caso.objects.get(pk=id_caso)
+        caso.caso_usuario= usuario_tecnico
+        caso.caso_estado="en proceso"
+        caso.save()
+        #! enviar correo a tecnico
+
+
+    except Error as error:
+        mensaje=str(error)
 
 
 
-def soliciud():
-    return
 
 
 def cerrar_sesion(request):
     return
-
-
-
-def enviarcorreo(asunto=None, mensaje=None, destinatario=None, archivo=None ):
-    remitente=sttngs.EMAIL_HOST_USER
-    template= get_template('enviacorreo.html')
-    contenido=template.render({'mensaje':mensaje})
-    try:
-
-    except
-
-
