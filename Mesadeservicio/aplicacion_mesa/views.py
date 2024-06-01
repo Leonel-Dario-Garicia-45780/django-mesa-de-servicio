@@ -130,12 +130,12 @@ def cerrar_sesion(request):
 
 
 
-def enviarcorreo(asunto=None, mensaje=None, destinatario=None, archivo=None ):
-    remitente=sttngs.EMAIL_HOST_USER
-    template= get_template('enviacorreo.html')
-    contenido=template.render({'mensaje':mensaje})
-    try:
+# def enviarcorreo(asunto=None, mensaje=None, destinatario=None, archivo=None ):
+#     remitente=sttngs.EMAIL_HOST_USER
+#     template= get_template('enviacorreo.html')
+#     contenido=template.render({'mensaje':mensaje})
+#     try:
 
-    except
+#     except
 
 
