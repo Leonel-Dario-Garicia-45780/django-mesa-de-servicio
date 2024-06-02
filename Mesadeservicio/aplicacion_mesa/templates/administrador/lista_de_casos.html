@@ -1,0 +1,93 @@
+{% extends "inicio_interfas.html" %}
+{% block encabezado %}
+    {% include "encabezado.html" %}
+{% endblock %}
+{% block menu %}
+    {% include "administrador/menu.html" %}
+{% endblock %}
+{% block contenido %}
+
+<h2> lista de casos por Asignar</h2>
+
+<!-- Button to Open the Modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal_de_tecnicos">
+    Open modal
+  </button>
+  
+  <!-- The Modal -->
+  <div class="modal" id="myModal_de_tecnicos">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">seleccione el tecnico prar el caso</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+  
+        <!-- Modal body -->
+        <div class="modal-body">
+          <form action="/asignar_tecnico/" method="post">
+            <select name="" id="">
+                <option value=""> seleccionar tecnico</option>
+                {% for tecnico in tecnicos %}
+                <option value="{{tecnico.id}}">{{tecnico.first_name}} {{tecnico.last_name}}</option>
+                {% endfor %}
+            </select>
+            <input type="text">
+          </form>
+        </div>
+  
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Asignar</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+
+
+
+<table>
+    <thead>
+    </thead>
+    <tr>
+        <th>Empleado</th>
+        <th>Descripciion</th>
+        <th>Oficina/ambiente</th>
+        <th>fecha</th>
+        <th>Estado</th>
+        <th>Asignar</th>
+        <th></th>
+    </tr>
+    <tbody>
+        {% for caso in lista_de_casos %}
+        <tr>
+            <td>
+                {{caso.caso_solicitud.soli_usuario.first_name}}
+                {{caso.caso_solicitud.soli_usuario.last_name}}
+            </td>
+            <td>{{caso.caso_solicitud.soli_descripcion}}</td>
+            <td>{{caso.caso_solicitud.oli_oficina_ambiente.nombre}}</td>
+            <td>{{caso.caso_solicitud.fecha_hora_creacion}}</td>
+            <td>{{caso.caso_estado}}</td>
+            <td>
+                <!-- libreria fontawesome para los iconos  -->
+                <i class="fa fa-edit"></i>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+<br>
+<br>
+
+<hr>
+
+{% endblock %}
+{% block piePagina %}
+    {% include "piePagina.html" %}
+{% endblock %}

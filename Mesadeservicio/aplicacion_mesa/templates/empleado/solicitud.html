@@ -9,7 +9,30 @@
 
 <h3> solicitud </h3>
 
-<form action="//" method="post"></form>
+<form action="/registro-solicitud/" method="post">
+    {% csrf_token %}
+    <div>
+
+        <label for=""> Descripciion</label>
+        <textarea name="texto_descripcion" id="" placeholder="descripcion de lo que le pasa al equipo"></textarea>
+    </div>
+    <div>
+
+        <label for="">Oficina_ambiente</label>
+        <select name="texto_oficina_ambiente" id="">
+            <option value="">seleccione</option>
+            {% for ofi in oficinas_ambientes %}
+            <option value="{{ofi.id}}">{{ofi.nombre}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <a href="/vista-solicitud/">
+    <button >
+        registrar
+    </button>
+</a>
+    <button type="reset">cancelar</button>
+</form>
 
 
 {% endblock %}
