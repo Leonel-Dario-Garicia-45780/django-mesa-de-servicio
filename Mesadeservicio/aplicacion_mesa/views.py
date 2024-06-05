@@ -239,8 +239,67 @@ def listar_casos_asignados_tecnico(request):
         return render(request, "formulario_secion.html", mensaje )
 
 
+def soucionar_caso(request):
+    if request.user.is_authenticated:
+        try:
+            if transaction.atomic():
+                procedimiento = request.POST["texto_procedimiento"]   
+                tipo_proc = request.POST["cbtipo_procedimiento"]   
+                tipo_procedimiento = Tipo_procedimiento.objects.get(pk=tipo_proc)
+                tipo_solucion= request.POST["cbtipo_solucion"]
+                id_caso= int(request.POST["id_caso"])
+                caso = Caso.objects.get(pk=id_caso)
+                #! objeto
+                solucioncaso=Solucion_Caso(
+                    solu_caso=caso,
+                    solu_procedimiento=procedimiento,
+                    solu_tiposolucuion=tipo_solucion
+                )
+                solucioncaso.save()
+                #! actualizar estado si esta completo el caso
+                if(tipo_solucion=="Definitiva"):
+                    caso.caso_estado="finalizado"
+                    caso.save()
+
+                soucioncasotipoprocedimiento=Solucion_caso_tipo_procedimiento(
+                    solucion_caso = solucioncaso,
+                    solicion_Tipo_procedimiento =tipo_procedimiento
+                )
+                soucioncasotipoprocedimiento.save()
 
 
+                #! enviar correo
+                ssolicitud = caso.solu_caso
+
+                asunto = 'Solución Caso - Mesa de Servicio - CTPI-CAUCA'
+                mensajeCorreo = f'Cordial saludo, <b>{user_empleado.first_name} {user_empleado.last_name}</b>, nos permitimos \
+                                informarle que se le ha dado solucion de tipo {tipo_solucion} al caso identificado con codigo:  \
+                                <b>{caso.caso_codigo}</b>. <br><br> lo invitamos revisar el equipo y verificar la solucion.\
+        #*                        según los acuerdos de solución establecidos para la Mesa de Servicios del CTPI-CAUCA.\
+                                <br><br>Para consultar en detalle la solocion:\
+                                http://mesadeservicioctpicauca.sena.edu.co.'
+                
+
+
+                # crear el hilo para el envío del correo
+                thread = threading.Thread(
+                    target=enviar_correo, args=(asunto, mensajeCorreo, [request.user.email]))
+                # ejecutar el hilo
+                thread.start()
+                mensaje = "Se ha registrado su solicitud de manera exitosa"
+                
+                
+        except Error as error:
+            mensaje=str(error)
+
+
+        retorno={"mensaje":mensaje}
+        return redirect(request,"listar_casos",retorno)
+
+
+    else:
+        mensaje = "inicia sesion"
+        return render(request, "formulario_secion.html", mensaje )
 
 def cerrar_sesion(request):
     auth.logout(request)
