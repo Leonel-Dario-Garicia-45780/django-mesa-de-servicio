@@ -27,11 +27,18 @@
   
         <!-- Modal body -->
         <div class="modal-body">
-          <form action="/asignar_tecnico/" method="post">
+          <form action="/solucion_caso/" method="post">
+            <textarea name="" id=""></textarea>
             <select name="" id="">
-                <option value=""> seleccionar tecnico</option>
-                {% for tecnico in tecnicos %}
-                <option value="{{tecnico.id}}">{{tecnico.first_name}} {{tecnico.last_name}}</option>
+                <option value=""> seleccionar tiposolucion</option>
+                {% for tp in lista_tipo_procedimiento %}
+                <option value="{{tp.id}}">{{tp.first_name}} {{tp.last_name}}</option>
+                {% endfor %}
+            </select>
+            <select name="" id="">
+                <option value=""> seleccionar tipo procedimiento</option>
+                {% for tp in lista_tipo_procedimiento %}
+                <option value="{{tp.id}}">{{tp.first_name}} {{tp.last_name}}</option>
                 {% endfor %}
             </select>
             <input type="text">
@@ -59,14 +66,14 @@
         <th>Oficina/ambiente</th>
         <th>fecha</th>
         <th>Estado</th>
-        <th>Asignar</th>
+        <th>Accion</th>
         <th></th>
     </tr>
     <tbody>
-        {% for caso in lista_de_casos %}
+        {% for caso in lista_casos %}
         <tr>
             <td>
-                {{Caso.caso_solicitud.soli_usuario.first_name}}
+                {{caso.caso_solicitud.soli_usuario.first_name}}
                 {{caso.caso_solicitud.soli_usuario.last_name}}
             </td>
             <td>{{caso.caso_solicitud.soli_descripcion}}</td>

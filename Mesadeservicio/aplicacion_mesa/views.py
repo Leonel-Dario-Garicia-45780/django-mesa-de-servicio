@@ -123,7 +123,7 @@ def registro_solicitud(request):
                     caso_usuario=user_caso,
                     #caso_estado=var_estado
                 )
-                caso.save
+                caso.save()
                 # ! enviar correo
                 asunto = 'Registro Solicitud - Mesa de Servicio - CTPI-CAUCA'
                 mensajeCorreo = f'Cordial saludo, <b>{user.first_name} {user.last_name}</b>, nos permitimos \
@@ -219,6 +219,27 @@ def asignar_tecnico_caso(request):
     else:
         mensaje = "inicia sesion"
         return render(request, "formulario_secion.html", mensaje )
+    
+
+
+def listar_casos_asignados_tecnico(request):
+    if request.user.is_authenticated:
+        try:
+            lista_casos = Caso.objects.filter(caso_estado="en proceso", caso_usuario=request.user )
+            lista_tipo_procedimiento = Tipo_procedimiento.objects.all().values()
+            mensaje = "lista de casos"
+        except Error as error:
+            mensaje=str(error)     
+
+        retorno= {"mensaje": mensaje, "lista_casos":lista_casos, "lista_tipo_solucion":tipoSolucion, "lista_tipo_procedimiento":lista_tipo_procedimiento }
+        return render(request, "tecnico/lista_de_casos_asignados.html", retorno)
+                #!               carpeta y html
+    else:
+        mensaje = "inicia sesion"
+        return render(request, "formulario_secion.html", mensaje )
+
+
+
 
 
 def cerrar_sesion(request):

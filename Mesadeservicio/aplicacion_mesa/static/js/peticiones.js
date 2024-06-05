@@ -15,7 +15,7 @@
 //     .then
 // }
 
-function agregar_IDcaso(id){
+/* function agregar_IDcaso(id){
     // id_caso= id
     document.getElementById()
-}
+} */
