@@ -4,9 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
-
 urlpatterns = [
-    
     path('', views.inicio),
     path("inicio_de_sesion/", views.inicio_de_sesion),
     path("inicio_administrador/", views.inicio_administrador),
@@ -15,16 +13,18 @@ urlpatterns = [
     path("vista-solicitud/", views.vista_solicitud),
     path("registro-solicitud/", views.registro_solicitud),
     path("listar_casos_para_asignar/", views.listar_casos),
-    path("solucionar_caso/", views.soucionar_caso),
+    path("asignar_tecnico_caso/", views.asignar_tecnico_caso),
+    path("listar_casos_asignados/", views.listar_casos_asignados_tecnico),
+    path("solucionar_caso/", views.solucionar_caso),
 
     path("cerrar_sesion/", views.cerrar_sesion),
 
-
-
-    # otros patrones de URL aquí
 ]
 
 
+#! me imagino que tambien va esto aqui
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 

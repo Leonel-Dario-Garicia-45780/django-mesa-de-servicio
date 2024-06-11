@@ -66,7 +66,7 @@
         {% for caso in lista_de_casos %}
         <tr>
             <td>
-                {{Caso.caso_solicitud.soli_usuario.first_name}}
+                {{caso.caso_solicitud.soli_usuario.first_name}}
                 {{caso.caso_solicitud.soli_usuario.last_name}}
             </td>
             <td>{{caso.caso_solicitud.soli_descripcion}}</td>
@@ -75,7 +75,7 @@
             <td>{{caso.caso_estado}}</td>
             <td>
                 <!-- libreria fontawesome para los iconos  -->
-                <i class="fa fa-edit"></i>
+                <i class="fa fa-edit" value="{{caso.id}}" ></i>
             </td>
         </tr>
         {% endfor %}

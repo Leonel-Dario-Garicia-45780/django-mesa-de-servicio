@@ -61,9 +61,6 @@ def inicio_empleado(request):
     else:
         mensaje="por favor inicie sesion primero"
         return render(request, "formulario_secion.html ",{"mensaje":mensaje})
- 
-
- #! crear lo inicios de empleado y tecnico
 
 def inicio_de_sesion(request):
     var_usuario= request.POST["texto_usuario"]
@@ -123,6 +120,7 @@ def registro_solicitud(request):
                     caso_usuario=user_caso,
                     #caso_estado=var_estado
                 )
+
                 caso.save()
                 # ! enviar correo
                 asunto = 'Registro Solicitud - Mesa de Servicio - CTPI-CAUCA'
@@ -239,7 +237,7 @@ def listar_casos_asignados_tecnico(request):
         return render(request, "formulario_secion.html", mensaje )
 
 
-def soucionar_caso(request):
+def solucionar_caso(request):
     if request.user.is_authenticated:
         try:
             if transaction.atomic():
