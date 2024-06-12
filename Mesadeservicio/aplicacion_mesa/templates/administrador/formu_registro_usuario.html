@@ -1,0 +1,42 @@
+{% extends "inicio_interfas.html" %}
+{% block encabezado %}
+    {% include "encabezado.html" %}
+{% endblock %}
+{% block menu %}
+    {% include "administrador/menu.html" %}
+{% endblock %}
+{% block contenido %}
+
+<div>
+    <form action="/registrar_usuario/" method="post">
+
+        <input type="text" name="texto_nombre"     id="texto_nombre"  placeholder="nombre">
+        <input type="text" name="texto_apellidos"  id="texto_apellidos"  placeholder="apellidos">
+        <input type="text" name="texto_correo"     id="texto_correo"  placeholder="correo electronico">
+        <select name="vr_tipo" id="">
+            <option value="">seleccione</option>
+            {% for tipo in tipoUsuario %}
+            <option value="{{tipo.0}}">{{tipo.0}}</option>
+            {% endfor %}
+        </select>
+        <select name="vr_rol" id="">
+            <option value="">selleccione</option>
+            {% for rol in roles %}
+            <option value="{{rol.id}}">{{rol.name}}</option>
+            {% endfor %}
+        </select>
+        <input type="file" name="filefoto"  id="filefoto"  placeholder="foto" onchange="mostrarImagen(evento)">
+
+        <img id="imagen_mostrar" src="../../../media/imagenes/user-logo.png" alt=""  width="200" height="200">
+
+        <button type="submit"> registrar </button>
+        <a href="/vista_gestionar_usuarios/"><button type="button">cancelar</button></a>
+
+    </form>
+</div>
+
+
+{% endblock %}
+{% block piePagina %}
+    {% include "piePagina.html" %}
+{% endblock %}

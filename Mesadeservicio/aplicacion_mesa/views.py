@@ -18,6 +18,11 @@ from smtplib import SMTPException
 
 #! importamos json
 from django.http import JsonResponse
+#! para la contraseña de usuario creado
+import random
+import string
+# importar el modelo Group - Roles
+from django.contrib.auth.models import Group
 
 
 # Create your views here.
@@ -162,8 +167,6 @@ def enviar_correo(asunto=None, mensaje=None, destinatario=None, archivo=None ):
     except SMTPException as error:
         print(error)
 
-#     except
-
 #! esta funcion es de administrador
 def listar_casos(request):
     try:
@@ -190,9 +193,9 @@ def listar_empleados_tecnicos():
 def asignar_tecnico_caso(request):
     if request.user.is_authenticated:
         try:
-            id_tecnico= int(request.POST[''] )
+            id_tecnico= int(request.POST['asg_tecnico'] )
             usuario_tecnico= Usuarios.objects.get(pk=id_tecnico)
-            id_caso= int( request.POST[''])
+            id_caso= int( request.POST['asg_caso'])
             caso=Caso.objects.get(pk=id_caso)
             caso.caso_usuario= usuario_tecnico
             caso.caso_estado="en proceso"
@@ -217,7 +220,6 @@ def asignar_tecnico_caso(request):
     else:
         mensaje = "inicia sesion"
         return render(request, "formulario_secion.html", mensaje )
-    
 
 
 def listar_casos_asignados_tecnico(request):
@@ -267,8 +269,8 @@ def solucionar_caso(request):
 
 
                 #! enviar correo
-                ssolicitud = caso.solu_caso
-
+                solicitud = caso.caso_solicitud
+                user_empleado=solicitud.soli_usuario
                 asunto = 'Solución Caso - Mesa de Servicio - CTPI-CAUCA'
                 mensajeCorreo = f'Cordial saludo, <b>{user_empleado.first_name} {user_empleado.last_name}</b>, nos permitimos \
                                 informarle que se le ha dado solucion de tipo {tipo_solucion} al caso identificado con codigo:  \
@@ -298,6 +300,137 @@ def solucionar_caso(request):
     else:
         mensaje = "inicia sesion"
         return render(request, "formulario_secion.html", mensaje )
+
+
+def vista_gestionar_usuarios(request):
+        if request.user.is_authenticated:
+            usuarios = Usuarios.objects.all()
+            retorno={
+                "usuarios":usuarios,
+                "user":request.user,
+                "rol":request.user.groups.get().name
+            }
+
+            return render(request,"administrador/vista_gestionar_usuarios.html", retorno)
+
+        else:
+            mensaje = "inicia sesion"
+            return render(request, "formulario_secion.html", mensaje )
+
+
+def vista_regiistrar_usuarios(request):
+        if request.user.is_authenticated:
+            roles = Group.objects.all()
+            retorno = {
+                "roles": roles,
+                "user": request.user,
+                'tipoUsuario': Tipo_usuario,
+                "rol": request.user.groups.get().name
+            }
+            return render(request, "administrador/formu_registro_usuario.html", retorno)
+
+        else:
+            mensaje = "inicia sesion"
+            return render(request, "formulario_secion.html", mensaje )
+
+
+def generar_password():
+    longitud = 10
+
+    caracteres = string.ascii_lowercase + \
+        string.ascii_uppercase + string.digits + string.punctuation
+    password = ''
+
+    for i in range(longitud):
+        password += ''.join(random.choice(caracteres))
+    return password
+
+def registrar_usuario(request):
+    if request.user.is_authenticated:
+        try:
+            nombres   =  request.POST["texto_nombre"]
+            apellidos =  request.POST["texto_apellidos"]
+            correo    =  request.POST["texto_correo"]
+            tipo      =  request.POST["vr_tipo"]
+            foto      =  request.POST["filefoto"]
+            va_rol    =  int(request.POST["vr_rol"])
+            with transaction.Atomic():
+                user = Usuarios(
+                    username=correo,
+                    first_name= nombres,
+                    last_name=apellidos,
+                    email=correo,
+                    user_tipo=tipo,
+                    user_foto=foto
+                )
+                user.save()
+                rol = Group.objects.get(pk=va_rol)
+                user.groups.add(rol)
+                if(rol.name=="Administrador"):
+                    user.is_staff=True 
+                user.save()
+                password_generado= generar_password()
+                print(f"pasword {password_generado}")
+                user.set_password(password_generado)
+                user.save()
+                mensaje= "usuario agregado correctamente"
+                retorno={"mensaje":mensaje}
+                #! enviar correo
+                asunto='registro sistema de servocio CTPI-CAUCA'
+                mensaje=f'Cordial saludo, <b>{user.first_name} {user.last_name}</b>, nos permitimos \
+                    informarle que usted ha sido registrado en el Sistema de Mesa de Servicio \
+                    del Centro de Teleinformática y Producción Industrial CTPI de la ciudad de Popayán, \
+                    con el Rol: <b>{rol.name}</b>. \
+                    <br>Nos permitimos enviarle las credenciales de Ingreso a nuestro sistema.<br>\
+                    <br><b>Username: </b> {user.username}\
+                    <br><b>Password: </b> {password_generado}\
+                    <br><br>Lo invitamos a utilizar el aplicativo, donde podrá usted \
+                    realizar solicitudes a la mesa de servicio del Centro. Url del aplicativo: \
+                    http://mesadeservicioctpi.sena.edu.co.'
+                thread= threading.Thread(
+                    target=enviar_correo, args=(asunto,mensaje,[user.email])
+                )
+                thread.start()
+        except Error as error:
+            transaction.rollback()
+            mensaje = f"{error}"
+        retorno = {"mensaje": mensaje}
+        return render(request, "administrador/formu_registro_usuario.html", retorno)
+
+    else:
+        mensaje = "inicia sesion"
+        return render(request, "formulario_secion.html", mensaje )
+
+def recuperar_contraseña(request):
+    try:
+        correo=request.POST["texto_coreo_recuperar"]
+        user=Usuarios.objects.filter(email=correo).first()
+        if(user):
+            password_generado=generar_password()
+            user.set_password(password_generado)
+            user.save()
+            mensaje="contraseña actulizada, por favor revisar el correo electronico"
+            retorno={"mensaje":mensaje}
+            #! enviar correo de recuperacion de contraseña
+            asunto="recuperacion de contraseña. Sistema de mesa de servicio CTPI-CAUCA"
+            mensaje=f'Cordial saludo, <b>{user.first_name} {user.last_name}</b>, le informamos \
+                    que se ha generado su nueva contraseña para el ingreso al sistema.\
+                    <br><b> username: </b> {user.username}\
+                    <br><b> password: </b> {password_generado}\
+                    <br><br> Para comprovar la nueva contraseña ingrese al sistema
+            '
+            thread=threading.Thread(
+                target=enviar_correo, args=(asunto, mensaje, [user.email])
+            )
+            thread.start()
+        else:
+            mensaje=f"no existe usuario con ese correo: {correo}, por favor escibe bien el correo"
+            retorno={"mensaje":mensaje}
+
+    except Error as error:
+        mensaje=str(error)
+
+    return render(request, "formulario_secion.html", retorno)
 
 def cerrar_sesion(request):
     auth.logout(request)

@@ -19,8 +19,6 @@ class Ofi_ambientes(models.Model):
         return self.nombre
 
 
-
-
 Tipo_usuario=[
     ('Administrativo','administrativo'),
     ('Instructor','Instructor')

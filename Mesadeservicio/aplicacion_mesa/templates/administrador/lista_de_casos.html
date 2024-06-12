@@ -49,7 +49,7 @@
   </div>
 
 
-
+<div>
 <table>
     <thead>
     </thead>
@@ -81,9 +81,52 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 <br>
 <br>
 <br>
+<div>
+
+  <!-- The Modal -->
+<div class="modal" id="modalTecnicos">
+  <div class="modal-dialog">
+      <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+              <h4 class="modal-title">Asignación Técnico Casos</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <form action="/asignar_tecnico_caso/" method="post">
+          <!-- Modal body -->
+          <div class="modal-body">
+             
+                  {% csrf_token %}
+                  <div>
+                      <label for="asg_tecnico" class="fw-bold">Técnico de Soporte</label>
+                      <select name="asg_tecnico" id="" class="form-select">
+                          <option value="">Seleccione</option>
+                          {% for tecnico in tecnicos %}
+                          <option value="{{tecnico.id}}">{{tecnico.first_name}} {{tecnico.last_name}}</option>
+                          {%endfor %}
+                      </select>
+                  </div>
+                  <input type="hidden" name="asg_caso" id="asg_caso" value="">
+                 
+              
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+              <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Asignar</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          </div>
+      </form>
+      </div>
+  </div>
+</div>
+
+</div>
 
 <hr>
 

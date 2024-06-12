@@ -19,3 +19,11 @@
     // id_caso= id
     document.getElementById()
 } */
+
+function mostrarImagen(evento) {
+    const archivos = evento.target.files
+    const archivo = archivos[0]
+    const url = URL.createObjectURL(archivo)
+    const imagen = document.getElementById('imagen_mostrar')
+    imagen.setAttribute('src', url)
+}
