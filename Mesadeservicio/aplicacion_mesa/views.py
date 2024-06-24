@@ -25,6 +25,13 @@ import string
 from django.contrib.auth.models import Group
 
 
+#! librerias para las graficas
+from django.db.models import Sum, Avg,Count
+import matplotlib.pyplot as plt
+import calendar
+from django.db.models.functions import ExtractMonth
+
+
 # Create your views here.
 
 def inicio(request):
@@ -417,8 +424,7 @@ def recuperar_contraseña(request):
                     que se ha generado su nueva contraseña para el ingreso al sistema.\
                     <br><b> username: </b> {user.username}\
                     <br><b> password: </b> {password_generado}\
-                    <br><br> Para comprovar la nueva contraseña ingrese al sistema
-            '
+                    <br><br> Para comprovar la nueva contraseña ingrese al sistema'
             thread=threading.Thread(
                 target=enviar_correo, args=(asunto, mensaje, [user.email])
             )
@@ -435,3 +441,25 @@ def recuperar_contraseña(request):
 def cerrar_sesion(request):
     auth.logout(request)
     return render(request, "formulario_secion.html",{"mensaje": "Ha cerrado la sesión"})
+
+
+#! funcion par generar graficas (acomoda lo necesario para tu ptroyecto)
+#! en este caso es de uso para el administrador
+def estadisticas(request):
+    if request.user.is_authenticated:
+        solicitudes_al_mes= Solicitud.objects.values(mes=ExtractMonth('fecha_hora_creacion')).annotate(cantidad=Count('id'))
+        meses=[]
+        yCantidadmeses=[]
+        texto_mes=['Enero','Febrero','Marzo','Abril','Mayo','junio','julio','agosto']
+        colores=[]
+        for solicitud in solicitudes_al_mes:
+            meses.append(texto_mes[int(solicitud['mes'])-1])
+            yCantidadmeses.append(solicitud['cantidad'])
+            color= "#"+''.join([random.choice('')])
+
+
+
+
+    else:
+        mensaje = "inicia sesion"
+        return render(request, "formulario_secion.html", mensaje )
