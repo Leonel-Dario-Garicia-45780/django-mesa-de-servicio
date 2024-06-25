@@ -40,9 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'aplicacion_mesa',
     "bootstrap5",#! boostrap 5 en local
+    "rest_framework",#! uncluir la api
+    "corsheaders",
+    "coreapi",
 ]
 
 MIDDLEWARE = [
+    #!api
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -159,6 +165,10 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 
+#! agregamos api
+REST_FRAMEWORK={
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+}
 
-
-
+CORS_ORIGIN_ALLOW_ALL= True
+ALLOWED_HOSTS=['*']
