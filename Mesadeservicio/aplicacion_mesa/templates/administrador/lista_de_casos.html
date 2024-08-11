@@ -9,46 +9,6 @@
 
 <h2> lista de casos por Asignar</h2>
 
-<!-- Button to Open the Modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal_de_tecnicos">
-    Open modal
-  </button>
-  
-  <!-- The Modal -->
-  <div class="modal" id="myModal_de_tecnicos">
-    <div class="modal-dialog">
-      <div class="modal-content">
-  
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h4 class="modal-title">seleccione el tecnico prar el caso</h4>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-  
-        <!-- Modal body -->
-        <div class="modal-body">
-          <form action="/asignar_tecnico/" method="post">
-            <select name="" id="">
-                <option value=""> seleccionar tecnico</option>
-                {% for tecnico in tecnicos %}
-                <option value="{{tecnico.id}}">{{tecnico.first_name}} {{tecnico.last_name}}</option>
-                {% endfor %}
-            </select>
-            <input type="text">
-          </form>
-        </div>
-  
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Asignar</button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-        </div>
-  
-      </div>
-    </div>
-  </div>
-
-
 <div>
 <table>
     <thead>
@@ -70,12 +30,13 @@
                 {{caso.caso_solicitud.soli_usuario.last_name}}
             </td>
             <td>{{caso.caso_solicitud.soli_descripcion}}</td>
-            <td>{{caso.caso_solicitud.oli_oficina_ambiente.nombre}}</td>
+            <td>{{caso.caso_solicitud.soli_oficina_ambiente.nombre}}</td>
             <td>{{caso.caso_solicitud.fecha_hora_creacion}}</td>
             <td>{{caso.caso_estado}}</td>
             <td>
                 <!-- libreria fontawesome para los iconos  -->
-                <i class="fa fa-edit" value="{{caso.id}}" ></i>
+                <!-- <i class="fa fa-edit" value="{{caso.id}}" ></i> -->
+                <i id="btnAbrirModal" onclick="agregarIdCaso('{{caso.id}}')" data-bs-toggle="modal"data-bs-target="#modalTecnicos" class="fa fa-edit"></i>
             </td>
         </tr>
         {% endfor %}
@@ -100,7 +61,6 @@
           <form action="/asignar_tecnico_caso/" method="post">
           <!-- Modal body -->
           <div class="modal-body">
-             
                   {% csrf_token %}
                   <div>
                       <label for="asg_tecnico" class="fw-bold">Técnico de Soporte</label>

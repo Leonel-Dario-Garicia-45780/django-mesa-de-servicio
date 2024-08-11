@@ -116,15 +116,19 @@ def registro_solicitud(request):
                     soli_oficina_ambiente = var_ofcinambiente
                 )
                 soliciud.save()
+                print("solucitud guardada")
                 fecha=datetime.now()
+                print(fecha)
                 year= fecha.year
                 consecutivo_caso = Solicitud.objects.filter(
                     fecha_hora_creacion__year=year 
                 ).count()
                 consecutivo_caso = str(consecutivo_caso).rjust(5,'0')
+                print(consecutivo_caso)
                 # codigo_caso = "REQ" + str(consecutivo_caso).rjust(5,'0')
                 codigo_caso = f"REQ-{year}-{consecutivo_caso}"
                 user_caso = Usuarios.objects.filter(groups__name__in=["Administrador"]).first()
+                print(user_caso)
                 #var_estado = "solicitada"
                 caso= Caso(
                     caso_solicitud=soliciud,
@@ -132,8 +136,8 @@ def registro_solicitud(request):
                     caso_usuario=user_caso,
                     #caso_estado=var_estado
                 )
-
                 caso.save()
+                print("caso guardado")
                 # ! enviar correo
                 asunto = 'Registro Solicitud - Mesa de Servicio - CTPI-CAUCA'
                 mensajeCorreo = f'Cordial saludo, <b>{user.first_name} {user.last_name}</b>, nos permitimos \
@@ -150,11 +154,12 @@ def registro_solicitud(request):
         except Error as error:
             transaction.rollback()
             mensaje= f"{error}"
-            return mensaje
+            print(mensaje)
         
         oficina_ambientes= Ofi_ambientes.objects.all()
         retorno={"mensaje":mensaje, "oficinas_ambietes":oficina_ambientes}
-        return render(request, "empleado/solicitud.html", retorno)
+        # return render(request, "empleado/solicitud.html", retorno)
+        return redirect(request, "empleado/solicitud.html", retorno)
     else:
         mensaje = "inicia sesion"
         return render(request, "formulario_secion.html", mensaje )
@@ -178,13 +183,15 @@ def enviar_correo(asunto=None, mensaje=None, destinatario=None, archivo=None ):
 def listar_casos(request):
     try:
         lista_de_casos= Caso.objects.filter(caso_estado='solicitada')
+        print(lista_de_casos)
         #! se trae los tencicos de paso para asignarlos
         tecnicos=Usuarios.objects.filter(groups__name__in=['Tecnico'])
+        print(tecnicos)
         mensaje="consulta realizada"
     except Error as error:
         mensaje=str(error)
 
-    retorno ={ "lista_de_casos ": lista_de_casos, "mensaje":mensaje , "tecnicos":tecnicos}
+    retorno ={ "lista_de_casos": lista_de_casos, "mensaje":mensaje , "tecnicos":tecnicos}
     return render(request, "administrador/lista_de_casos.html" , retorno)
 
 def listar_empleados_tecnicos():

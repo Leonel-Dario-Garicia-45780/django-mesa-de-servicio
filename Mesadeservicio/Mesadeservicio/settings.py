@@ -14,8 +14,8 @@ from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
+# BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -132,7 +132,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+""" STATIC_URL = '/static/' """
+#! correccion de chat
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'aplicacion_mesa', 'static'),
+]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -143,7 +150,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'aplicacion_mesa.Usuarios'
 
-STATIC_URL = os.path.join(BASE_DIR, '/static/')
+# STATIC_URL = os.path.join(BASE_DIR, 'aplicacion_mesa', 'static'),
 
 MEDIA_URL = '/media/'
 
@@ -158,9 +165,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # #! variables del correo, para enviar el correo pues
 EMAIL_HOST = 'smtp.gmail.com' #? no se que es o que ba ahi
 EMAIL_HOST_USER = 'gun45780@gmail.com'
-# #!cuenta que envia correo ^^^^ 
+#!cuenta que envia correo ^^^^ 
 EMAIL_HOST_PASSWORD = 'qnwviudvxwmgcpfv'
-# #! contraseña de aplicacion^^^^^^
+#! contraseña de aplicacion^^^^^^
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 

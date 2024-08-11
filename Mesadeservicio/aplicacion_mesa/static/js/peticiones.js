@@ -1,24 +1,24 @@
-// function listar_tecnicos(){
-//     var url = "/listar_tecnicos/"
+function listar_tecnicos(){
+    var url = "/listar_tecnicos/"
+    fetch (url,
+        {
+            method:"GET",
+            body:JSON.stringify(),
+            headers:{
+                "content-type":"application/json"
+            }
+        }
+    )
+    .then(respuesta => respuesta.json())
+    .then(resultado =>{
+        
+    })
+}
 
-//     fetch (url,
-//         {
-//             method:"GET",
-//             body:JSON.stringify(),
-//             headers:{
-
-//             }
-//         }
-
-//     )
-//     .then
-//     .then
-// }
-
-/* function agregar_IDcaso(id){
+function agregar_IDcaso(id){
     // id_caso= id
-    document.getElementById()
-} */
+    document.getElementById("").value = id
+}
 
 function mostrarImagen(evento) {
     const archivos = evento.target.files
